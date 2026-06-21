@@ -1,9 +1,11 @@
 import numpy as np
 class ScratchLinearRegression:
-    def __init__(self,learning_rate=0.01,iterations=1000):
+    def __init__(self,learning_rate=0.01,iterations=1000,penalty=None,alpha=1.0):
         # self. permanently saves these settings inside the model object
         self.lr = learning_rate
         self.iterations = iterations
+        self.penalty = penalty   # NEW: 'ridge', 'lasso', or None
+        self.alpha = alpha       # NEW: How aggressive the penalty is
         self.weights = None
         self.bias = None
 
@@ -23,6 +25,11 @@ class ScratchLinearRegression:
             
             # db: Find out how much of our mistake was caused by the baseline starting price
             db = (2 / n_samples) * np.sum(y_predicted - y)
+
+            if self.penalty == 'ridge':
+                dw += 2* self.alpha * self.weights
+            elif self.penalty == 'lasso':
+                dw += self.alpha * np.sign(self.weights)
 
             self.weights -= self.lr * dw   # Fix feature multipliers: Nudge them a tiny bit to reduce the mistake
             self.bias -= self.lr * db   # Fix starting base price: Nudge it a tiny bit to reduce the mistake
