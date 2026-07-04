@@ -27,8 +27,12 @@ class ScratchLinearRegression:
             db = (2 / n_samples) * np.sum(y_predicted - y)
 
             if self.penalty == 'ridge':
+                # Ridge (L2): Penalty shrinks proportionally. Larger weights get a bigger penalty.
+                # This safely shrinks fighting/duplicate columns, but never hits exactly 0.0.
                 dw += 2* self.alpha * self.weights
             elif self.penalty == 'lasso':
+                # Lasso (L1): Penalty is a flat tax (using np.sign). 
+                # Violently forces weak "garbage" data weights straight into the wall (0.0).
                 dw += self.alpha * np.sign(self.weights)
 
             self.weights -= self.lr * dw   # Fix feature multipliers: Nudge them a tiny bit to reduce the mistake
